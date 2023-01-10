@@ -1,0 +1,90 @@
+# Design a Birthday Card app
+
+## About the user interface
+
+The user interface (UI) of an app is what you seen on the screen:
+text, images, buttons and other elements. It's how the app shows
+things to the user, and how the user interacts with the app.
+
+Each of these elements is what is called a `View`. Almost everything
+seen on the screen of an app is a `View`. `Views` can be interactive, 
+like a clickable button or an editable input field.
+
+`TextView` is a `View` that is used for displaying Text.
+
+`Views` have relationships to each other. For example an image may be 
+next to some text, and buttons may form a row. To organise `Views` you
+put them into a container. A `ViewGroup` is a container that `View` objects 
+can sit in and is responsible for arranging the `Views` inside it. The 
+arrangement, or <i>layout</i> can change depending on the size and aspect
+ratio of the screen of the Android device that the app is running on, and
+the layout can adapt to whether the device is in portrait or landscape mode.
+
+One kind of `ViewGroup` is a `ConstraintLayout` which helps to arrange the 
+`Views` inside it in a flexible way. 
+
+## Layout constraints
+
+To add a margin (which is the space between the edge of the `Veiw` and other 
+components) you can specify 
+
+- `android:layout_marginStart = "16dp"`
+- `android:layout_marginTop = "16dp"`
+- `android:layout_marginEnd = "16dp"`
+- `android:layout_marginBottom = "16dp"`
+
+to the component. This will add a margin where you specify.
+
+You then need to relate this to something else. This can 
+be done using:
+
+- `app:layout_constrainStart_toStartOf="parent`
+- `app:layout_constrainTop_toTopOf="parent`
+- `app:layout_constrainBottom_toBottomOf="parent`
+- `app:layout_constrainEnd_toEndOf="parent`
+
+Which will relate the `constrainPart` to `toPartOf`. 
+
+## Layout measures
+ 
+- `dp` is a measnure for distances on the screen
+- `sp` is a unit of measure for the font size.
+
+UI elements in Android Apps use to differen tunits of measurement, <i>
+density-independent pixels<i> (<b>dp</b>) and <i> scalable pixels </i>
+(<b>sp</b>) which is used when se4tting the size of text. By default
+sp is the same size as dp, but it resizes based on the users preferred 
+text size.
+
+## Layout order
+
+The order of `Views` in a `ViewGroup` determines the order in which
+they are drawn and thus the order in which they appear. The first `View`
+in the `ViewGroup` will thus be drawn first and will appear behind other
+`Views` that have been added later.
+
+## Add Images
+
+To display an image in yout app it needs a place to be displayed. In the 
+same way that a `TextView` is used to display text, you can use an 
+`ImageView` to display images.
+
+To wrap the image to the width and height of the parent then you can set:
+
+- `android:layout_width="0dp"`
+- `android:layout_height="0dp"`
+
+To then scale the image without distortion you can then use:
+
+- `android:scaleType="centerCrop"`
+
+
+## Good coding practices
+
+A hardcoded string is one that is written directly into the code of you app.
+They make it more difficult to translate the app into other languages and to
+reuse the same string in different places in your app. This can be dealt
+with by extract the string into a resource file. 
+
+`ImageViews` should have content descriptions to help make the app more
+acessible.
