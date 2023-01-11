@@ -503,9 +503,100 @@ Edit the `onBindViewHolder` to set the image resource:
 We can make the app look more polished such as:
 
 - Adding Padding
-- Use cards
+- Use cardsDispla
     - A [`CardView`](https://m2.material.io/develop/android/components/cards/) 
     provides an easy way to contain a grop of views while 
     providing a consistent style for the container. 
 - Change the App theme colors
 - Change the app icon
+
+## Test Lists and Adapters
+
+Tests are not suppored contain logic, they are only supposed to test it. 
+They should also not manipulate values or conduct any real computation.
+
+The unit tests should only call the piece of code from the app that is 
+necessary for the test and test the values or state of teh code that 
+results from calling that code. UI tests should only test for the 
+expected state of the user integrace.
+
+### Instrumentation test
+
+To create instrumentation tests we need:
+
+1. Add a test runner to the newly created class:
+```Kotlin
+@RunWith(AndroidJUnit4::class)
+```
+2. Make an activity scenario rule for the main activity:
+```
+@get:Rule
+val activity = ActivityScenarioRule(MainActivity::class.java)
+```
+
+We need to add a dependency in the `build.gradle` file. Here:
+
+- `implementation` is for dependencies that will be used in the application
+itself
+- `testImplementation` is for dependencies that are used in unit tests
+- `androidTestImplementation` is for dependencies that are used in 
+instrumentation tests.
+
+In this case we add a dependency to interact with `RecyclerViews` in 
+instrumentatinon tests:
+
+``` gradle
+dependencies {
+    ...
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
+}
+```
+
+We can then test the `RecyclerView` e.g. scrolling to an individual item:
+
+``` Kotlin
+   @Test
+    private fun scroll_to_item(){
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions
+                .scrollToPosition<RecyclerView.ViewHolder>(9)
+        )
+
+        onView(withText(R.string.affirmation10))
+            .check(matches(isDisplayed()))
+    }
+
+```
+
+Other actions that can be tested can be found [here](https://developer.android.com/reference/androidx/test/espresso/contrib/RecyclerViewActions?authuser=1).
+
+### Unit Tests
+
+``` Kotlin
+package com.example.affirmations
+
+import android.content.Context
+import com.example.affirmations.adapter.ItemAdapter
+import com.example.affirmations.model.Affirmation
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import org.mockito.Mockito.mock
+
+class AffirmationsAdapterTests {
+
+    // create a mock instance of context becaus we run on aJVM
+    // not an actual device
+    private val context = mock(Context::class.java)
+
+    @Test
+    fun adapater_size() {
+        val data = listOf(
+            Affirmation(R.string.affirmation1, R.drawable.image1),
+            Affirmation(R.string.affirmation2, R.drawable.image2)
+        )
+        val adapter = ItemAdapter(context, data)
+        assertEquals("ItemAdapter is not the correct size", data.size, adapter.itemCount)
+    }
+
+}
+```
