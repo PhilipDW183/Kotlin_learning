@@ -388,3 +388,124 @@ item view. Extend from `RecyclerView.ViewHolder` class
 class with the customer `ViewHolder` class.
 - Implement these methods within the adapter: `getItems()`,
 `onCreateViewHolder()` and `onBindViewHolder()`.
+
+## Display a list of images using cards
+
+### Add support for images in the Affirmation class
+
+We need to add a property in the `Affirmation` data class to hold a value 
+for an image resource ID. This means a single `Affirmation` object instance
+will contain a resource ID for the text and image resource ID as inputs:
+
+``` Kotlin
+data class Affirmation(val stringResourceId: Int, val imageResourceId: Int)
+```
+
+Users however could accidentally pass in the arguments in the wrong order.
+To avoird this we can use Resource anotations to trigger a warning if 
+the user supplies the wrong type of ID:
+
+``` Kotlin
+package com.example.affirmations.model
+
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+
+// pass in the string resource ID when creating an affirmation
+data class Affirmation(
+    @StringRes val stringResourceId: Int, 
+    @DrawableRes val imageResourceId: Int
+    )
+```
+
+### Initialise list of affrimations with images
+
+We now need to update the `DataSource` class to include a link to the 
+image as well.
+
+``` Kotlin
+package com.example.affirmations.data
+
+import com.example.affirmations.R
+import com.example.affirmations.model.Affirmation
+
+class Datasource() {
+
+    fun loadAffirmations(): List<Affirmation> {
+        return listOf<Affirmation>(
+            Affirmation(R.string.affirmation1, R.drawable.image1),
+            Affirmation(R.string.affirmation2, R.drawable.image2),
+            Affirmation(R.string.affirmation3, R.drawable.image3),
+            Affirmation(R.string.affirmation4, R.drawable.image4),
+            Affirmation(R.string.affirmation5, R.drawable.image5),
+            Affirmation(R.string.affirmation6, R.drawable.image6),
+            Affirmation(R.string.affirmation7, R.drawable.image7),
+            Affirmation(R.string.affirmation8, R.drawable.image8),
+            Affirmation(R.string.affirmation9, R.drawable.image9),
+            Affirmation(R.string.affirmation10, R.drawable.image10)
+        )
+    }
+}
+```
+
+### Add an `ImageView` to the list item layout
+
+We need to biew add ab `ImageView` to the item layout. For this we need
+to place them in a `ViewGroup`. To arrange them in a vertical layout we
+use the `LinearLayout`:
+
+``` XML
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="match_parent"
+        android:layout_height="194dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+```
+
+### Update the item adapter to set the image
+
+The `ItemViewHolder` instance should now hold a reference to the
+`TextView` and the `ImageView` in the list item layout:
+
+``` Kotlin
+lass ItemViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+    val textView: TextView = view.findViewById(R.id.item_title)
+    val imageView: ImageView = view.findViewById(R.id.item_image)
+}
+```
+
+Edit the `onBindViewHolder` to set the image resource:
+
+``` Kotlin
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        val item = dataset[position]
+        holder.textView.text = context.resources.getString(item.stringResourceId)
+        holder.imageView.setImageResource(item.imageResourceId)
+    }
+```
+
+### Polishing the UI
+
+We can make the app look more polished such as:
+
+- Adding Padding
+- Use cards
+    - A [`CardView`](https://m2.material.io/develop/android/components/cards/) 
+    provides an easy way to contain a grop of views while 
+    providing a consistent style for the container. 
+- Change the App theme colors
+- Change the app icon
