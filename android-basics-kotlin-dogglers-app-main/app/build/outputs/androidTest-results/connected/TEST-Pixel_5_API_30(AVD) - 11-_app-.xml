@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.example.dogglers.GridListTests" tests="5" failures="0" errors="0" skipped="0" time="7.823" timestamp="2023-01-13T15:02:13" hostname="localhost">
+  <properties>
+    <property name="device" value="Pixel_5_API_30(AVD) - 11" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="recycler_view_item_count" classname="com.example.dogglers.GridListTests" time="0.957" />
+  <testcase name="grid_list_content_on_first_page" classname="com.example.dogglers.GridListTests" time="0.514" />
+  <testcase name="vertical_scrolling" classname="com.example.dogglers.GridListTests" time="0.716" />
+  <testcase name="grid_list_content_at_last_position" classname="com.example.dogglers.GridListTests" time="0.512" />
+  <testcase name="grid_list_content_at_first_position" classname="com.example.dogglers.GridListTests" time="0.665" />
+</testsuite>
