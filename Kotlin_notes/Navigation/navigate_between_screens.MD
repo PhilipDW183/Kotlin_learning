@@ -142,3 +142,156 @@ fun main() {
 ```
 
 Examples in Android include `onClickListener` and `OnKeyListener`
+
+## Activities and Intents
+
+### Intents
+
+An <i>intent</i> is an object representing some action to be performed
+. The most common use for an intent is to launch an activity. There
+are two types of intents - <b>implicit</b> and <b>explicit</b>. 
+
+- An <b>explicit intent</b> is highly specific, where you know the
+exact activity to be launched, often a screen in yur own app.
+- An <b>implicit intent</b> is a bit more abstract where you tell the 
+system the type of action, such as opening a link, composing an email,
+or making a phone call, and the system is responsible for figuring
+out how to fulfill the request. 
+
+Generally, when showing an activity in your own app you use an 
+explicit intent. But for actions that don't necessarily involve the 
+current app, e.g. an extenrla link, you'd use <b>implicit intent</b>.
+
+### Setting up an explicit intent
+
+In the case of the word app, we can create an intent to launch the 
+`DetailActivity` which is the second list of words.
+
+For this we need to:
+- Set up something that will trigger the new activity
+- Get a reference to the context
+- Create an intent passing in the context and the class name of the
+dest activity to create the new object behind the scenes
+- Pass in any extra data
+- Start the activity on the context object.
+
+In this case the code looks like:
+
+``` Kotlin
+ // create a listener for the button
+        holder.button.setOnClickListener{
+            // get a reference to the context
+            val context = holder.itemView.context
+            // create an intent passing in the context and the class name of the dest activity
+            // this creates a DetailActivity object behind the scenes
+            val intent = Intent(context, DetailActivity::class.java)
+            // this passes the extra data, in this case the letter, to the new activity
+            intent.putExtra("letter", holder.button.text.toString())
+            // then start activity on the context object passing the intent
+            context.startActivity(intent)
+        }
+```
+
+which is implemented in the `onBindViewHolder()` of the `LetterAdapter`
+class. 
+
+The information then passed from the `MainActivity` can be retried in the 
+`DetailActivity` using:
+
+``` Kotlin
+val letterId = intent?.extras?.getString("letter").toString()
+```
+
+- The `intent` property is part of any activity and keeps a reference to
+the intent that was used to launch the activity
+- The `extras` property is of type `Bundle` which provides a way to access 
+all extras passed into the intent
+- Both are marked with question mark as both properties are nullable. To 
+safely access a property or call a function on a `null` object, you put 
+a `?` after the name.
+- We add `toString()` to ensure `letter` is a `String` and not `null`
+
+Currently, both the code to perform the intent and retrive the selected 
+letter hardcard the name of the extra `letter`. While this works for the 
+small example, it is not the best approach for large apps where you have
+many more intent extras to keep track off. We need a way to define a 
+constant that can be used across multiple classes while keeping the code
+organised. 
+
+For this there is a Kotlin feature that can be used to seperate constants
+and make them usable without a particular instance of the class called 
+[companion objects](https://kotlinlang.org/docs/object-declarations.html).
+This is similar to other objects, such as instances of a class, but only
+a single instance of a companion object will exist for the duration of your
+program which is why this is sometimes called the 
+[singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern). In 
+this case we will use a companion object to refactor the code for the 
+"letter" extra.
+
+For this we create a companion object:
+
+``` Kotlin
+    companion object {
+        const val LETTER = "letter"
+    }
+```
+
+call this in `DetailActivity` `onCreate()`:
+
+``` Kotlin
+val letterId = intent?.extras?.getString(LETTER).toString()
+```
+
+And use this in the `putExtra` of `LetterAdapter`:
+
+``` Kotlin
+intent.putExtra(DetailActivity.LETTER, holder.button.text.toString())
+```
+
+### Setting up an implicit activity
+
+In this case we are going to use the dictionary functionalkity provided by
+Google search to show the definition of each word, using the devices 
+browser to show the search page.
+
+For this we can add an `onClickListener` to each word as:
+
+``` Kotlin 
+        holder.button.setOnClickListener {
+            // create a URI for the destination
+            val queryUrl: Uri = Uri.parse("${DetailActivity.SEARCH_PREFIX}${item}")
+            // create a new intent
+            // use ActionView which takes a URI which the system knows to process
+            // this using the user's web browser
+            val intent = Intent(Intent.ACTION_VIEW, queryUrl)
+            // start the activity by passing in the intent
+            context.startActivity(intent)
+        }
+```
+
+### Set up menu and icons
+
+We can now add a menu option so that users can toggle between list and grid 
+layout for the letters. 
+
+The top of apps are called app bar. The menu option is set up from the `MainActivity`
+and uses `menu` in the `res` folder. These allow you to add buttons and menus
+to the app bar.
+
+### Summary
+
+- Explicit intents are used to navigate specific activity in the app
+- Implicit intents correspond to specific actions and let the system
+determine how to fulfill the intent
+- Menu options allow you to add buttons and menuts to the app bar
+- Companion objects provide a way to associate reusable constants with a
+type rather than instance of the type
+- To perform an intent:
+    - Get a reference to the context
+    - Create an `Intent` object providing either an activity or intent type
+    (depending on whether explicit or implicit)
+    - Pass any needed data by calling `putExtra`
+    - Call `startActivity()` passing the `intent` object
+
+
+Commonly used intents can be found [here](https://developer.android.com/guide/components/intents-common?authuser=1)
