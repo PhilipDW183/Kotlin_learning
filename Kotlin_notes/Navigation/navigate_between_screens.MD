@@ -274,9 +274,9 @@ For this we can add an `onClickListener` to each word as:
 We can now add a menu option so that users can toggle between list and grid 
 layout for the letters. 
 
-The top of apps are called app bar. The menu option is set up from the `MainActivity`
-and uses `menu` in the `res` folder. These allow you to add buttons and menus
-to the app bar.
+The top of apps are called app bar. The menu option is set up from the 
+`MainActivity` and uses `menu` in the `res` folder. These allow 
+you to add buttons and menus to the app bar.
 
 ### Summary
 
@@ -295,3 +295,129 @@ type rather than instance of the type
 
 
 Commonly used intents can be found [here](https://developer.android.com/guide/components/intents-common?authuser=1)
+
+## Stages of the activity lifecycle
+
+The activity lifecycler is the set of states an activity can be in during its
+lifetime. This extends from when the activity is initially created to when
+it is destroyed and the system reclaims that activity's resources. As a user
+navigates activities in the app, those activities transition between different
+states in the lifecycle.
+
+
+The Activity lifecyler is as follows:
+
+![Activity lifecycle](../assets/imgs/activity_lifecycle.JPG)
+
+Where the callback methods are invoked when the activity moves
+from one state to another. These can be overwriten to perform tasks in 
+response tothose lifecycle changes. 
+
+We can track when changes are happening using logging.
+
+### `onCreate()`
+
+The `onCreate` method must be implemented in every activity. This is where
+you should do any one-time initalisatios for the activity. This is where you
+inflate the layout, define click listeners or set up the view binding.
+
+This is called once, just after the activity is initialised. When the new 
+`Activity` object is created in memory. After `onCreate()` executes then
+the activity is created.
+
+When you override the `onCreate()` method you must call the superclass
+implementation to complete the creation of the activity. So within it
+you must immediately call `super.onCreate()`. The same is true for other
+lifecycle callback method. 
+
+For logging there are three parts of the command:
+
+- The priority of the message e.g. `Log.d()` method writes debug messages
+- The log tag (first parameter). This is a string that lets you more easily
+find the log message in the Logcat. This is typically the name of the class.
+    - A good convention is to declare a TAG constant in the class e.g.
+    `const val TAG = MainActivity`
+- The actual log message (second parameter), is  short string.
+
+### `onStart()`
+
+The `onStart()` lifecycle method is called just after `onCreate()`. After
+`onStart()` runs then the activity is visible on the screen. `onStart()` 
+may be called many times in the lifecycle of the activity.
+
+This is paired with a corresponding `onStop()` lifecycle method. If the 
+user starts the app and then returns to the device's home screen, the activity
+is stopped and is no longer visible on screen. 
+
+### `onResume()`
+
+`onResume()` is also called when the app is start even if there is nothing
+to resume. This gives the activity focus and makes it ready for the user 
+to interact with it. 
+
+This is called when the activity has focus (i.e. after a call or share)
+
+### `onRestart()`
+
+This is called before the activity is visible but when the app is restarted.
+The `onResart` is a place to put code that you only want to call if your
+activity is not being started for the first time.
+
+### `onPause()`
+
+This is called when the activity loses focuses i.e. a call comes in. This
+only lasts a short time before returning to the activity or navigating to
+another activity or app. You generally want to keep updating the UI so
+the rest of the app doesn't appear to freeze.
+
+### `onSaveInstanceState()` 
+
+This method is a callback you use to save any data that you might need if
+the `Activity` is destroyed. In the lifecycle callback diagram,
+`onSaveInstanceState()` is called after the activity has been stopped (`onStop`).
+It is called every time the app goes into the background.
+
+This gives you a chance to save a small amount of information to a bundle
+as the acitivity exits the foreground. The system saves this data now
+because if it waited until it was shutting down the app, the system
+might be under resource pressure. 
+
+Saving the data each time ensures that updated data in the bundle is available
+to restore. 
+
+This is called after `onStop()` e.g.:
+
+``` Kotlin
+    // called after `onStop()`
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // put int puts integers and takes two arguments
+        // the key string
+        // the integer value
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+
+        Log.d(TAG, "onSaveInstanceState Called")
+    }
+
+```
+
+Where the constants have been declared before the class decleration:
+
+``` Kotlin
+const val TAG = "MainActivity"
+const val KEY_REVENUE = "revenue_key"
+const val KEY_DESSERT_SOLD = "dessert_sold_key"
+```
+
+saves the state of the revenue and deserts sold. This is then passed
+back to the `onCreate()` method:
+
+``` Kotlin
+if (savedInstanceState != null) {
+    // get the data from the item
+    revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
+    dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD, 0)
+}
+```
+
