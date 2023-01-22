@@ -479,7 +479,7 @@ The view has already been removed from memory, but the fragment object still exi
 
 Represented as:
 
-`[fragment_lifecycle](../assets/imgs/fragment_lifecycle.JPG)
+![fragment_lifecycle](../assets/imgs/fragment_lifecycle.JPG)
 
 </br>
 The main differences is with the `onCreate()` methods. With activities this would
@@ -588,4 +588,31 @@ We can create setup scenarios to avoid repeated code using:
 - `@After` runs after each function
 - `@AfterClass` is at the end of the class
 
-Th
+## Navigation
+
+- `NavHostFragment` - container for fragment destinations
+- `NavHostController` - conducts the navigation
+- `NavigationView` - Menu for DrawerLayer, not part of the `NavHostFragment` as exists before navigation. This is the menu
+that is in the navigation drawer.
+- `NavigationUI` - responsible for updating content that is
+outside `NavHostFragment` e.g. `BottomNavBar`
+
+## Summary
+
+- `onCreateView()` can be called multiple times in a fragments
+lifecycle
+- Benefits of fragments:
+    - Navigation between fragments allows for more sophisticated
+    user interface patterns, such as tab bars
+    - Using multiple fragments within an activity allows for an
+    adaptive layout across multiple screen sizes
+    - The same fragment can be reused across multiple activities
+- `onViewCreated()`
+    - You should bind view objects to properties in the fragment
+    - Set properties of individaul views, such as the recycler
+    view's adapter
+- `onCreateView()` 
+    - You should inflate the layout
+- `onSupportNavigateUp` method needs to be override in the host
+activity to ensure the app's fragment-based navigation responds
+to the app's "Up" button
