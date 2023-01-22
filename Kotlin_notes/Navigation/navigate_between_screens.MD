@@ -556,3 +556,36 @@ Use cases for fragments
 single activity, with all navigation occuring between fragments
 - Fragments make common layout patterns possible such as master-detail layouts
 on tables, or multiple tabs within the same activity
+
+## Test navigation component
+
+We can create setup scenarios to avoid repeated code using:
+
+``` Kotlin
+   lateinit var navController: TestNavHostController
+
+    lateinit var exampleFragmentScenario: FragmentScenario<ExampleFragment>
+
+    @Before
+    fun setup(){
+        navController = TestNavHostController(
+            ApplicationProvider.getApplicationContext()
+        )
+
+        exampleFragmentScenario =  launchFragmentInContainer(themeResId=R.style.Theme_Example)
+
+        exampleFragmentScenario.onFragment { fragment ->
+
+            navController.setGraph(R.navigation.example_nav_graph)
+
+            Navigation.setViewNavController(fragment.requireView(),  navController)
+        }
+    }
+```
+
+- `@before` is before each function
+- `@beforeClass` is at the beggining of the class
+- `@After` runs after each function
+- `@AfterClass` is at the end of the class
+
+Th
