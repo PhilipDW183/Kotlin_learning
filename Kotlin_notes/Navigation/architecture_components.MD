@@ -283,5 +283,39 @@ instance of a binding class contains direct references to all views
 that have an ID in the corresponding layout. 
 
 Data binding binds the UI components in the layout to data sources in 
-the app using a declarative format. 
+the app using a declarative format. This binds data (from code) to views
++ view binding (binding veiws to code). This means you can bind views
+directly ub the layout file i.e.
+
+Binding in UI controller:
+
+``` Kotlin
+binding.textViewUnscrambledWord.text = viewModel.currentScrambledWord
+```
+
+Binding in layout file:
+
+``` XML
+android:text="@{gameViewModel.currentScrambledWord}"
+```
+
+The main advantage of using data binding is that it lets you remove 
+many UI framework calls in the activities, making them simple and 
+easier to maintain. This can also improve your app's performance and
+help prevent memory leaks and null pointer exceptions.
+
+Data binding layout files are slighly different and start with a root
+tage of `<layout>` followed by an optional `<data>` element and a 
+`<view>` root element. 
+
+### Summary
+
+- `LiveData` holds data. It is a wrapper that can be used with any data
+- `LiveData` is observable, which means that an observer is notified when
+the data held by the `LiveData` object changes
+- `LiveData` is lifecycle aware. 
+- Apps can listen to the LiveData changes from the layout using Data 
+binding and binding expressions
+- Binding expressions are written within the layout in the attribute
+properties (such as `android:text`) referencing the layout property.
 
