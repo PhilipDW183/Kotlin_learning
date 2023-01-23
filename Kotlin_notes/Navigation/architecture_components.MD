@@ -234,3 +234,54 @@ displayed in the UI. Put that data and any related logic in a `ViewModel`
 `ViewModel` class allows data to survive configuration changes such as 
 screen rotations
 - `ViewModel` is one of the recommended Android Archictecture Components
+
+## LiveData with ViewModel
+
+[`LiveData`](https://developer.android.com/topic/libraries/architecture/livedata?authuser=1)
+is an observable data holder class that is lifecycle-aware. Some
+characteristics of `LiveData`:
+
+- `LiveData` holds data; `LiveData` is a wrapper that can be used
+with any type of data
+- `LiveData` is observable, which means that an observer is 
+notified when the data held by the `LiveData` object changes
+- `LiveData` is lifecycle aware. When you attach an observer
+to the `LiveData`, the observer is asocciated with a 
+`LifecycleOwner` (usually an activity or fragment). The `LiveData`
+only updates observed that are in an active lifecycle state such
+as `STARTED` or `RESUMED`.
+
+In this case so far `updateNextWordOnScreen()` method is called
+in `onViewCreated()`, `restartGAme()`, `onSkipWord()` and 
+`onSubmitWord()`. With `Livedata` we will not have to call the method
+from multiple places to update the UI. Instead this will only be done
+once in the observer.
+
+`MutableLiveData` is the mutable version of the `LiveData` so that the
+value in it can be changed. 
+
+`LiveData` and `MutableLiveData` are generic classes so you need to
+specify the type of data that they hold.
+
+We can change `var` to `val` as a resul of `LiveData` because the 
+object will remain the same, only the data stored in the object will
+change. 
+
+To access values from a `LiveData` object you use `.value`.
+
+We can then set up an observed in the `GameFragment` which will observe
+the changes to the app's data `currentScrambledWord`. `LiveData` is
+lifecycle aware so that it only updates observed that are in an active 
+lifecycle state. So the observer in the `GameFragment` will only be
+notified when the `GameFragment` is in `STARTED` or `RESUMED`
+
+A lambda expressoin is always surrounded by curly braces `{}`
+
+View binding is a feature that allows you to more easily access views
+in code. It generates a binding class for each XML layout file. An 
+instance of a binding class contains direct references to all views
+that have an ID in the corresponding layout. 
+
+Data binding binds the UI components in the layout to data sources in 
+the app using a declarative format. 
+
