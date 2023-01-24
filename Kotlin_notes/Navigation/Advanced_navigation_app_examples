@@ -1,0 +1,30 @@
+# Advanced navigation app examples
+
+## Share ViewModel
+
+To include a `NavGraph` in the project:
+
+[This link](https://developer.android.com/guide/navigation/navigation-getting-started?authuser=1)]
+
+It is a common use case to share data between
+fragments in most production apps. 
+
+With a shared view model, they are accessed using
+the activity instance rather than the fragment
+instance. This is done using `activityViewModels()` 
+rather than `ViewModel` as the former is scopred
+to the current activity, so the instance will remain
+the same across multiple fragments in the same
+activity.
+
+In Kotlin, values marked with `const` keyword do not
+change and the value is known at compile time. 
+
+### Summary
+
+- Shared ViewModel is used to save the app's data from multiple fragments in a single ViewModel. Multiple fragments in the app will access the shared ViewModel using their activity scope.
+- LifecycleOwner is a class that has an Android lifecycle, such as an activity or a fragment.
+- LiveData observer observes the changes to the app's data only if the lifecycle owner is in active states (STARTED or RESUMED).
+- Listener bindings are lambda expressions that run when an event happens such as an onClick event. They are similar to method references such as textview.setOnClickListener(clickListener) but listener bindings let you run arbitrary data binding expressions.
+- The LiveData transformation method(s) provides a way to perform data manipulations on the source LiveData and return a resulting LiveData object.
+- Android frameworks provides a class called SimpleDateFormat, a class for formatting and parsing dates in a locale-sensitive manner. It allows for formatting (date → text) and parsing (text → date) dates.
